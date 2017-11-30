@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.streamroyale" name="Streamroyale" version="1.12" provider-name="faaarmer">
+<addon id="plugin.video.streamroyale" name="Streamroyale" version="1.14" provider-name="faaarmer">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
 		<import addon="script.module.requests" version="2.12.4"/>
@@ -14,7 +14,7 @@
     </extension>
 </addon>
 
-    <addon id="faaarmer.repo" name="Faaarmers Repo" version="1.0.2" provider-name="Faaarmer">
+    <addon id="faaarmer.repo" name="Faaarmers Repo" version="1.0.4" provider-name="Faaarmer">
         <requires>
             <import addon="xbmc.addon" version="12.0.0"/>
         </requires>
