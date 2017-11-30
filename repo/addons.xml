@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons>
+<addon id="plugin.video.streamroyale" name="Streamroyale" version="1.0.7" provider-name="faaarmer">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+		<import addon="script.module.requests" version="2.12.4"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <description>Watch movies in 1080p HD quality (where available), Access to the premium stream/download servers located closer to you! Stream movies through your devices native player, Access to the TV Series section.</description>
+        <platform>all</platform>
+    </extension>
+</addon>
+
+    <addon id="faaarmer.repo" name="Faaarmers Repo" version="1.0.0" provider-name="Faaarmer">
+        <requires>
+            <import addon="xbmc.addon" version="12.0.0"/>
+        </requires>
+        <extension point="xbmc.addon.repository" name="Faaarmers Repo">
+            <info compressed="false">https://raw.githubusercontent.com/faaarmer/kodi-repo/master/repo/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/faaarmer/kodi-repo/master/repo/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/faaarmer/kodi-repo/master/repo/</datadir>
+            <hashes>false</hashes>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary>Stuff.</summary>
+            <description>More stuff.</description>
+            <platform>all</platform>
+    </extension>
+</addon>
+</addons>
