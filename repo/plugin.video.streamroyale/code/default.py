@@ -320,12 +320,13 @@ def getserieslinks(url):
         episodeNum=match.group()
         episodeNum=episodeNum.replace("e","")
         title="S"+seasonNum.zfill(2)+"E"+episodeNum.zfill(2)
+        rawnum="s"+seasonNum+"e"+episodeNum
         episodeNum=int(episodeNum)
         seasonNum=int(seasonNum)
-        rawnum="s"+seasonNum+"e"+episodeNum
         playcount=0
-        if rawnum in watchedList
+        if rawnum in watchedList:
             playcount = 1
+            
         try:
             name=sourcecode['seasons'][seasonNum-1]['episodes'][episodeNum-1]['name']
         except:
