@@ -1,0 +1,42 @@
+Version: 1.0.0 - 05/08/2017
+    Initial Upload
+	
+Version: 1.0.1 - 09/08/2017
+	Removed hard coded reference to StreamRoyale domain name.
+	Consolidated search function.
+	Major code cleanup.
+	Consolidated list content function.
+	Added Code to generate next page url.
+	Added next page to correct sections.
+	Mirros now read from json response.
+	Random mirrors now used for movie section.
+	Random mirrors now used for tv section.
+	Episodes now listed in alphabetical order.
+
+	
+Version: 1.0.2 - 17/08/2017
+	Added detection of 1080p links.
+	Fixed Error in movie search.
+	Added error handling for movies with no stream available.
+
+Version: 1.0.3 - 18/08/2017
+	Added requirement for script.module.requests.
+	
+Version: 1.0.4 - 19/08/2017
+	Movies now detect stream links for 480p, 720p 1080p, normal, hd
+	Added Genres for TV Shows Section.
+	Added Genres for Movies Section.
+	Added Next Page detection to all listed content.
+	
+Version: 1.0.5 - 20/08/2017
+	Changed Settings layout.
+	Changed Addon Icon.
+	Changed Addon Name to Something More Genreic.
+	changed Addon Dir name To Match Addon Name.
+	Changed addon to work with multiple sources.
+
+Version: 1.0.6 - 03/11/2017
+	Short term fix for key index error.
+	
+Version: 1.0.7 - 04/11/2017
+	Added support for Webrips in Movies

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.streamroyale" name="Streamroyale" version="1.18" provider-name="faaarmer">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+		<import addon="script.module.requests" version="2.12.4"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <description>Watch movies in 1080p HD quality (where available), Access to the premium stream/download servers located closer to you! Stream movies through your devices native player, Access to the TV Series section.</description>
+        <platform>all</platform>
+    </extension>
+</addon>
