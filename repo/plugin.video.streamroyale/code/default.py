@@ -9,7 +9,8 @@ import string
 import json
 import sys
 import re
-
+from datetime import datetime
+currentYear = str(datetime.now().year)
 addon_name = "plugin.video.streamroyale"
 addon = xbmcaddon.Addon(addon_name)
 userdata_path = xbmc.translatePath("special://userdata")
@@ -30,9 +31,6 @@ def storecredentials(store_type):
     if (Keyboard.isConfirmed()):
         addon.setSetting(id=store_type, value=Keyboard.getText())
 
-baseurl = 'https://gafork.com'
-loginurl = baseurl + "/api/v1/user/login"
-closesessionsurl = baseurl + "/logout-elsewhere"
 
 def save_cookies(requests_cookiejar, filename):
     with open(filename, 'wb') as f:
@@ -51,7 +49,7 @@ def dologin(url,payload,headers):
 def cookiecheck(url, username, password, contenttype, useragent):
     loginpayload = {'user': username, 'password': password}
     loginheaders = {'content-type': contenttype, 'user-agent': useragent}
-    if not os.path.isfile(cookie_file):    
+    if not os.path.isfile(cookie_file):
         dologin(url,loginpayload,loginheaders)
         xbmcgui.Dialog().ok("Warning", "No previous login detected, You will now be logged in.")
     else:
@@ -59,28 +57,38 @@ def cookiecheck(url, username, password, contenttype, useragent):
         if not response.status_code == 200:
             dologin(url,loginpayload,loginheaders)
             xbmcgui.Dialog().ok("Warning", "Your login has expired, You will now be logged back in.")
-                                
+
 if addon.getSetting('username') =="":
     storecredentials("username")
 
 if addon.getSetting('password') =="":
     storecredentials("password")
-    
+
+if addon.getSetting('url') =="":
+    storecredentials("url")
+
 username = addon.getSetting('username')
 password = addon.getSetting('password')
+baseurl = addon.getSetting('url')
+
+if "https://" not in baseurl:
+    baseurl = "https://" + baseurl
+
+loginurl = baseurl + "/api/v1/user/login"
+closesessionsurl = baseurl + "/logout-elsewhere"
 
 def onlyascii(oldstring):
     newstring = filter(lambda x: x in string.printable, oldstring)
     return newstring
-        
+
 def getsource(url):
     response = requests.get(url, cookies=load_cookies(cookie_file))
     return response.text
 
 def search(query, search_type):
-    query_url = "https://xxdazcoul3-dsn.algolia.net/1/indexes/al_titles_index/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.24.3&x-algolia-application-id=XXDAZCOUL3&x-algolia-api-key=c5c1279f5ad09819ecf2af9d6b5ee06a"
+    query_url = "https://xxdazcoul3-dsn.algolia.net/1/indexes/al_titles_index/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.27.1&x-algolia-application-id=XXDAZCOUL3&x-algolia-api-key=c5c1279f5ad09819ecf2af9d6b5ee06a"
     search_contenttype = "application/x-www-form-urlencoded"
-    payload = {"query":query, "facets":"*", "hitsPerPage":"30", "filters":"yr>=1919 AND yr<=2017 AND " + search_type}
+    payload = {"query":query, "facets":"*", "hitsPerPage":"30", "filters":"yr>=1919 AND yr<="+currentYear+" AND " + search_type}
     headers = {'content-type': search_contenttype, 'user-agent': useragent}
     session = requests.session()
     response = session.post(query_url, data = json.dumps(payload), headers = headers)
@@ -95,7 +103,7 @@ def searchentry(message):
     Keyboard.doModal()
     if (Keyboard.isConfirmed()):
         return Keyboard.getText()
-    
+
 def Main(url):
     addDir('MOVIES', url,1,'','Browse Movies')
     addDir('TV SERIES', url,2,'','Browse TV Series')
@@ -105,7 +113,7 @@ def Main(url):
 def Movies(url):
     addDir('[COLORblue]SEARCH[/COLOR]', "searchmovie",4,'','Search Movies')
     addDir('BROWSE BY GENRES', url,7,'','Browse Movies By Genre')
-    addDir('HIGHEST GROSSING', url + '/api/v1/list/movies.highest_grossing',4,'','Highest Grossing Movies Of All Time') 
+    addDir('HIGHEST GROSSING', url + '/api/v1/list/movies.highest_grossing',4,'','Highest Grossing Movies Of All Time')
     addDir('HIGHEST VOTED', url + '/api/v1/discover/movies?from=0&to=50&sort=score&quality=all&genre=all',4,'','Highest Voted Movies Of All Time')
     addDir('MOST POPULAR', url + '/api/v1/discover/movies?from=0&to=50&sort=popularity&quality=all&genre=all',4,'','Most Popular Movies Of All Time')
     addDir('MOST POPULAR 2015', url + '/api/v1/list/movies.most_popular_2015',4,'','Highest Popular Movies Released In 2015')
@@ -136,7 +144,7 @@ def MovieGenres(url):
     addDir('WESTERN', url + '/api/v1/discover/movies?from=0&to=50&sort=trending&quality=all&genre=western',4,'','Browse Western Movies')
     addDir('MUSICAL', url + '/api/v1/discover/movies?from=0&to=50&sort=trending&quality=all&genre=musical',4,'','Browse Musical Movies')
     addDir('FOREIGN', url + '/api/v1/discover/movies?from=0&to=50&sort=trending&quality=all&genre=foreign',4,'','Browse Foregin Movies')
-    
+
 def TVSeries(url):
     addDir('[COLORblue]SEARCH[/COLOR]', 'searchseries',4,'','Search TV Series')
     addDir('BROWSE BY GENRES', url,8,'','Browse TV Shows By Genre')
@@ -169,7 +177,7 @@ def TVSeriesGenres(url):
     addDir('SPORT', url + '/api/v1/discover/tv?from=0&to=50&sort=trending&quality=all&genre=sport',4,'','Browse Sport TV Shows')
     addDir('WESTERN', url + '/api/v1/discover/tv?from=0&to=50&sort=trending&quality=all&genre=western',4,'','Browse Western TV Shows')
     addDir('MUSICAL', url + '/api/v1/discover/tv?from=0&to=50&sort=trending&quality=all&genre=musical',4,'','Browse Musical TV Shows')
-    
+
 def Search(url):
     addDir('[COLORblue]SEARCH MOVIES[/COLOR]', "searchmovie",4,'','Browse Movies')
     addDir('[COLORblue]SEARCH TV SERIES[/COLOR]', 'searchseries',4,'','Browse TV Series')
@@ -187,8 +195,8 @@ def nextpage(url):
     RightRegex = re.compile("to=[0-9]+.sort(.*)")
     right_url = re.findall(RightRegex,url)
     right = right_url[0]
-    return left + str(new_from) + "&to=" + str(new_to) + "&sort" + right 
-    
+    return left + str(new_from) + "&to=" + str(new_to) + "&sort" + right
+
 def listcontent(url):
     item_count = 0
     if "from" in url:
@@ -200,7 +208,7 @@ def listcontent(url):
     elif url == "searchmovie":
         query = searchentry("Enter Movie Name:")
         sourcecode = search(query, "movie")
-        sourcecode = sourcecode['hits'] 
+        sourcecode = sourcecode['hits']
     else:
         sourcecode = getsource(url)
         sourcecode = onlyascii(sourcecode)
@@ -227,12 +235,12 @@ def listcontent(url):
         else:
             addDir(title,movie_url,6,poster,'')
     if "from" in url:
-        if item_count == 50:        
+        if item_count == 50:
             if "movies" in url:
                 addDir("[COLORblue]NEXT PAGE[/COLOR]",next_page_url,4,'','')
             else:
                 addDir("[COLORblue]NEXT PAGE[/COLOR]",next_page_url,4,'','')
-    
+
 def getmovielinks(url):
     ImdbRegex = re.compile(baseurl[8:] + "\/movies\/(.*)\/")
     IMDB = re.findall(ImdbRegex,url)
@@ -283,7 +291,7 @@ def getmovielinks(url):
         except:
             pass
     except:
-        addDir('[COLORred]NO STREAMS AVAILABLE[/COLOR]', "",999,'','No Streams Found on StreamRoyale')
+        addDir('[COLORred]NO STREAMS AVAILABLE[/COLOR]', "",999,'','No Streams Found on'+baseurl)
 
 def getserieslinks(url):
     ImdbRegex = re.compile(baseurl[8:] + "\/tv\/(.*)\/")
@@ -326,7 +334,7 @@ def getserieslinks(url):
         playcount=0
         if rawnum in watchedList:
             playcount = 1
-            
+
         try:
             name=sourcecode['seasons'][seasonNum-1]['episodes'][episodeNum-1]['name']
         except:
@@ -343,7 +351,7 @@ def getserieslinks(url):
     episode_list = sorted(raw_list)
     for i in episode_list:
         addLink("[COLORgold]"+i['Title']+"[/COLOR] - " + i['name'],i['URL'],poster,{"tvshowtitle": mediaTitle, "title":i['name'], "plot": desc, "mediatype":"episode", "episode": i['episode'], "season":i['season'], "playcount":i['playcount']})
-        
+
 def get_params():
     param=[]
     paramstring=sys.argv[2]
@@ -383,15 +391,15 @@ def addDir(name,url,mode,iconimage,desc):
 def extractIMDBUrl(url):
     match = re.search('tt\d{7}', url)
     found=""
-    if match:                      
+    if match:
         found=match.group() ## 'found word:cat'
     return found
 
 def addToMyList(imdbID):
-    r = requests.patch('https://streamroyale.com/api/v1/user/list/mylist', json={"id":imdbID, "episodeID":"", "added":True}, cookies=load_cookies(cookie_file))
+    r = requests.patch(baseurl+'/api/v1/user/list/mylist', json={"id":imdbID, "episodeID":"", "added":True}, cookies=load_cookies(cookie_file))
 
 def removeFromList(imdbID):
-    r = requests.patch('https://streamroyale.com/api/v1/user/list/mylist', json={"id":imdbID, "episodeID":"", "added":False}, cookies=load_cookies(cookie_file))
+    r = requests.patch(baseurl+'/api/v1/user/list/mylist', json={"id":imdbID, "episodeID":"", "added":False}, cookies=load_cookies(cookie_file))
 
 params=get_params()
 url=None
@@ -436,5 +444,5 @@ elif mode==24:
 elif mode==25:
     xbmc.executebuiltin('Container.Refresh')
     removeFromList(extractIMDBUrl(url))
-    
+
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
